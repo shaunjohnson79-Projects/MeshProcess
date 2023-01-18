@@ -20,27 +20,27 @@ class MeshGrid():
 class MeshReader():
     #self._lineTypeList= list()
     
-    def __init__(self,fileName):
+    def __init__(self,fileName) -> None:
         self.ReadRawData(fileName)
         print(self.numberOfLines)
-        self.GetLineTypes()
-        #self.processRawData()
-    
-    
-    def ReadRawData(self,fileName) -> None:
-        """Read in the raw data"""
-        with open(fileName) as fileHandle:
-            Lines = fileHandle.readlines()
-        self.rawData=Lines
+        self._CountEnumType(LineType.GRID)
         
+    def _CountEnumType(self,enumType):
+        return self.GetLineTypes.count(enumType)
+        
+      
     # def ProcessRawData(self) -> None:
     #     """Proces the Raw Data"""
     #     for line in self.rawData:
     #         currentLineType = self.getLineType(line)
     #         print(currentLineType)
 
-    def GetLineTypes(self) -> None:
+    @property
+    def GetLineTypes(self) -> list:
         """Make a list of the LineTypes"""
+        
+        if hasattr(self,'_lineTypeList'):
+            return self._lineTypeList
         
         # define the list
         self._lineTypeList = [None] * self.numberOfLines
@@ -48,9 +48,11 @@ class MeshReader():
         # fill the list
         for i, line in enumerate(self.rawData):
             self._lineTypeList[i]=self.getLineType(line)    
+        
+        return self._lineTypeList
              
     @property
-    def numberOfLines(self):
+    def numberOfLines(self) -> int:
         """Get the number of lines in the file"""
         return len(self.rawData)
                 
@@ -79,8 +81,13 @@ class MeshReader():
         else:
             print("Unknown line")
             print(line)
-            return  
+            return
         
+    def ReadRawData(self,fileName) -> None:
+        """Read in the raw data"""
+        with open(fileName) as fileHandle:
+            Lines = fileHandle.readlines()
+        self.rawData=Lines
           
         
 
