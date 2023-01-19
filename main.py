@@ -1,4 +1,6 @@
 from enum import Enum
+import numpy as np
+from pytictoc import TicToc
 
 # class syntax
 class LineType(Enum):
@@ -21,14 +23,25 @@ class MeshReader():
     #self._lineTypeList= list()
     
     def __init__(self,fileName) -> None:
+        timer = TicToc() #create instance of class
+        
+        timer.tic()
         self.ReadRawData(fileName)
+        timer.toc("Read Raw Data")
+        
         print(self.numberOfLines)
-        self._CountEnumType(LineType.GRID)
+
+        print(self._CountEnumType(LineType.GRID))
+        
+
+        bb = self.rawData[self.getLineTypes == LineType.GRID]
+        print(bb)
         
     def _CountEnumType(self,enumType):
-        return self.GetLineTypes.count(enumType)
+        return np.count_nonzero(self.getLineTypes == enumType)
+
         
-      
+
     # def ProcessRawData(self) -> None:
     #     """Proces the Raw Data"""
     #     for line in self.rawData:
@@ -36,26 +49,22 @@ class MeshReader():
     #         print(currentLineType)
 
     @property
-    def GetLineTypes(self) -> list:
+    def getLineTypes(self) -> list:
         """Make a list of the LineTypes"""
-        
+
+        # Check if variable has already been calculated
         if hasattr(self,'_lineTypeList'):
             return self._lineTypeList
         
         # define the list
-        self._lineTypeList = [None] * self.numberOfLines
+        self._lineTypeList = np.empty(self.numberOfLines,dtype=LineType)
         
         # fill the list
-        for i, line in enumerate(self.rawData):
+        for i, line in np.ndenumerate(self.rawData):
             self._lineTypeList[i]=self.getLineType(line)    
         
         return self._lineTypeList
-             
-    @property
-    def numberOfLines(self) -> int:
-        """Get the number of lines in the file"""
-        return len(self.rawData)
-                
+                      
     def getLineType(self,line) -> LineType:
         """get the line Type"""
         if line.startswith(LineType.GRID.value):
@@ -83,11 +92,16 @@ class MeshReader():
             print(line)
             return
         
+    @property
+    def numberOfLines(self) -> int:
+        """Get the number of lines in the file"""
+        return len(self.rawData)
+        
     def ReadRawData(self,fileName) -> None:
         """Read in the raw data"""
         with open(fileName) as fileHandle:
             Lines = fileHandle.readlines()
-        self.rawData=Lines
+        self.rawData=np.array(Lines)
           
         
 
