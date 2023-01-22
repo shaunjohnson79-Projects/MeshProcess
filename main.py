@@ -1,6 +1,7 @@
 from enum import Enum
 import numpy as np
 from pytictoc import TicToc
+import struct
 
 # class syntax
 class LineType(Enum):
@@ -33,9 +34,41 @@ class MeshReader():
 
         print(self._CountEnumType(LineType.GRID))
         
+        self.readGrid()
 
-        bb = self.rawData[self.getLineTypes == LineType.GRID]
-        print(bb)
+
+        
+    def readGrid(self):
+        # Get the grid lines
+        tempLines = self.rawData[self.getLineTypes == LineType.GRID]
+        np.save("tempData.npy", tempLines)
+        
+        
+
+        
+        grid_number=np.empty(self.numberOfLines,dtype=int)
+        grid_coordinate=np.empty([self.numberOfLines,3],dtype=float)
+        
+        format_string = "8s8ff"
+        
+        for i, line in np.ndenumerate(tempLines):
+            data = struct.unpack(format_string, line)
+            
+            
+            
+        # dtype=[
+        #     ("GRID", "s8"),
+        #     ("ELEMENT", "f4"),
+        #     ("z", "f4"),
+        #     ("red", "u1"),
+        #     ("green", "u1"),
+        #     ("blue", "u1"),
+        #     ]
+        # output_data = np.array(data, dtype=dtype)  
+            
+        
+        #create the datasets to hold the data
+        
         
     def _CountEnumType(self,enumType):
         return np.count_nonzero(self.getLineTypes == enumType)
