@@ -36,38 +36,67 @@ class MeshReader():
         
         self.readGrid()
 
-
+    def calculateArraySizeForString(self,tempLines,width) -> list:
+        """Calculate the array size for a given delimation width"""
+        width=8
+        NOC=int(np.dtype(tempLines.dtype).itemsize/4)
+        if (NOC % width) == 0:
+            pass
+        else:
+            print(f"problems")
+        arraySize=[np.size(tempLines),int(NOC/width)]
+        return arraySize    
+    
+    def divideStringArrayFixedWidth(self,tempLines,width) -> np.ndarray:
+        
+        #Calculate the array size for a given delimation width
+        arraySize=self.calculateArraySizeForString(tempLines,width)
+        
+        tempLines=np.array([string[i:i+width] for string in tempLines for i in range(0, len(string), width)], dtype='U8')
+        tempLines=np.reshape(tempLines,arraySize)
+        
+        return tempLines
+    
+    def convertToFloat(self,tempGrid) -> np.ndarray:
+        
+        tempGrid = np.core.defchararray.replace(tempGrid, '-', 'e-')
+        tempGrid = np.core.defchararray.replace(tempGrid, '+', 'e+')
+        remove_e = lambda x: x if x[0]!='e' else x[1:]
+        remove_e = np.vectorize(remove_e)
+        tempGrid = remove_e(tempGrid)
+        
+        tempGrid=tempGrid.astype(float)
+        
+        return tempGrid
+        
         
     def readGrid(self):
         # Get the grid lines
         tempLines = self.rawData[self.getLineTypes == LineType.GRID]
-        np.save("tempData.npy", tempLines)
         
+        # Divide the lines by fixed width
+        width=8
+        tempLines=self.divideStringArrayFixedWidth(tempLines,width)
         
+        # Grid coordinates        
+        tempGrid=tempLines[:,[3,4,5]]
+        tempGrid=self.convertToFloat(tempGrid)
+        
+        # Element Numbers
+        tempElementNumber=tempLines[:,[1]]
+        tempElementNumber=tempElementNumber.astype(int)
 
+
+
+        print(tempGrid)
+        print(type(tempLines))
         
-        grid_number=np.empty(self.numberOfLines,dtype=int)
-        grid_coordinate=np.empty([self.numberOfLines,3],dtype=float)
         
-        format_string = "8s8ff"
-        
-        for i, line in np.ndenumerate(tempLines):
-            data = struct.unpack(format_string, line)
-            
-            
-            
-        # dtype=[
-        #     ("GRID", "s8"),
-        #     ("ELEMENT", "f4"),
-        #     ("z", "f4"),
-        #     ("red", "u1"),
-        #     ("green", "u1"),
-        #     ("blue", "u1"),
-        #     ]
-        # output_data = np.array(data, dtype=dtype)  
-            
-        
-        #create the datasets to hold the data
+        #np.save("tempData.npy", tempLines)        
+        #grid_number=np.empty(self.numberOfLines,dtype=int)
+        #grid_coordinate=np.empty([self.numberOfLines,3],dtype=float)
+        #for i, line in np.ndenumerate(tempLines):
+        #    data = struct.unpack(format_string, line)
         
         
     def _CountEnumType(self,enumType):
@@ -96,6 +125,7 @@ class MeshReader():
         for i, line in np.ndenumerate(self.rawData):
             self._lineTypeList[i]=self.getLineType(line)    
         
+                
         return self._lineTypeList
                       
     def getLineType(self,line) -> LineType:
@@ -135,6 +165,10 @@ class MeshReader():
         with open(fileName) as fileHandle:
             Lines = fileHandle.readlines()
         self.rawData=np.array(Lines)
+        
+        # Remove new line charcter from strings
+        self.rawData=np.core.defchararray.replace(self.rawData,"\n",'', count=None)
+        
           
         
 
