@@ -4,6 +4,7 @@ import numpy as np
 
 from .lineTypeClass import LineType
 
+
 class RawData():
     def __init__(self) -> None:
         print("raw Data init")

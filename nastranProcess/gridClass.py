@@ -27,7 +27,7 @@ class Grid():
         self.elementNumber=tempElementNumber
         self.coordinate=tempElementNumber
 
-        print(tempValue)
-        print(type(tempLines))
+        #print(tempValue)
+        #print(type(tempLines))
         
         return self
