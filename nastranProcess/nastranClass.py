@@ -1,3 +1,4 @@
+import pickle
 
 from .rawDataClass import RawData
 from .gridClass import Grid
@@ -12,6 +13,11 @@ class ReadFile():
         self.fileName = fileName
         
         self.rawData = RawData().read(fileName)
+        
+        file = open('tempData.dat', 'wb')
+        pickle.dump(self, file)
+        file.close()
+        
         self.grid = Grid().convert(self.rawData)
        
         print(self.rawData.display())
