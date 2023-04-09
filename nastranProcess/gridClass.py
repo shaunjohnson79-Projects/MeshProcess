@@ -3,7 +3,8 @@ import numpy as np
 from typing import Self
 
 from .lineTypeClass import LineType
-from .generalMethods import convertToFloat, divideStringArrayFixedWidth
+from .generalMethods import convertToFloat,convertToInt
+from .generalMethods import divideStringArrayFixedWidth
 
 class Grid():
     def __init__(self) -> None:
@@ -18,25 +19,18 @@ class Grid():
         tempLines=divideStringArrayFixedWidth(tempLines,width)
         
         # Element Numbers
-        tempElementNumber=tempLines[:,[1]]
-        tempElementNumber=tempElementNumber.astype(int)
+        self.elementNumber=tempLines[:,[1]]
+        self.elementNumber=convertToInt(self.elementNumber)
         
         # Grid coordinates        
-        tempValue=tempLines[:,[3,4,5]]
-        tempValue=convertToFloat(tempValue)
+        self.coordinate=tempLines[:,[3,4,5]]
+        self.coordinate=convertToFloat(self.coordinate)
         
         # Read extra elements
-        #print(tempLines.size())
-        #if tempLines.shape[1]>5:
-        #    pass
-        #    tempValue2=tempLines[:,[6:tempLines.shape[1]]]
-        #    tempValue2=convertToFloat(tempValue2)           
-        
-        
-
-        self.elementNumber=tempElementNumber
-        self.coordinate=tempElementNumber
-
+        if tempLines.shape[1]>5:
+            self.extra=tempLines[:,6:]
+            self.extra=convertToInt(self.extra)  
+            
         #print(tempValue)
         #print(type(tempLines))
         

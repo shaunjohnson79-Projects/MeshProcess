@@ -13,3 +13,7 @@ class LineType(Enum):
     EIGRL = "EIGRL"
     ENDDATA = "ENDDATA"
     EMPTY = "EMPTY"
+
+class MeshCount(Enum):
+    CTETRA = "4"
+    CPENTA = "6"

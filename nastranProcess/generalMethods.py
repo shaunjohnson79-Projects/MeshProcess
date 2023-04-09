@@ -24,8 +24,30 @@ def convertToFloat(tempValue) -> np.ndarray:
     
     tempValue = np.core.defchararray.replace(tempValue, '-', 'e-')
     tempValue = np.core.defchararray.replace(tempValue, '+', 'e+')
+    
     remove_e = lambda x: x if x[0]!='e' else x[1:]
     remove_e = np.vectorize(remove_e)
     tempValue = remove_e(tempValue)
     
-    return tempValue.astype(float) 
+    tempValue = np.char.strip(tempValue)
+    
+    tempValue = np.where(tempValue == '', np.nan, tempValue)
+    tempValue = tempValue.astype(float)
+
+    return tempValue
+
+def convertToInt(tempValue) -> np.ndarray:
+    
+    tempValue = np.char.strip(tempValue)
+    
+    tempValue = np.where(tempValue == '', 0, tempValue)
+    tempValue = tempValue.astype(int)
+    
+    return tempValue
+
+def getEnum(name,EnumClass):
+    if name in EnumClass.__members__:
+        member = EnumClass[name]
+        return member
+    else:
+        member=None
