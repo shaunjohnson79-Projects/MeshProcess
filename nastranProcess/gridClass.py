@@ -1,16 +1,27 @@
 import pickle
 import numpy as np
 from typing import Self
+from dataclasses import dataclass
+from pytictoc import TicToc
 
 from .lineTypeClass import LineType
 from .generalMethods import convertToFloat,convertToInt
 from .generalMethods import divideStringArrayFixedWidth
 
+@dataclass
 class Grid():
     def __init__(self) -> None:
-        print("Grid init")
+        #print("Grid init")
+        self.pointer: np.ndarray
+        self.coordinate: np.ndarray
         
     def convert(self,rawData) -> Self:
+        """Convert the rawData"""
+        
+        # Start timer
+        timer = TicToc() 
+        timer.tic()
+        
         # Get the grid lines
         tempLines = rawData.data[rawData.getLineTypes == LineType.GRID]
         
@@ -34,12 +45,5 @@ class Grid():
         #print(tempValue)
         #print(type(tempLines))
         
+        timer.toc("Convert Grid:")
         return self
-    
-def debug():
-    file = open('../tempData.dat', 'rb')
-    data = pickle.load(file)
-    file.close()
-
-if __name__ == "__main__":
-    debug()

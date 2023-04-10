@@ -1,18 +1,22 @@
 from pytictoc import TicToc
 from typing import Self
 import numpy as np
+from dataclasses import dataclass
 
 from .lineTypeClass import LineType
 
-
+@dataclass
 class RawData():
     def __init__(self) -> None:
-        print("raw Data init")
+        self.data: np.array
+
+
         
     def read(self,fileName) -> Self:
         """Read in the raw data"""
         
-        timer = TicToc() #create instance of class
+        # Start timer
+        timer = TicToc()
         timer.tic()
         
         with open(fileName) as fileHandle:
@@ -23,7 +27,7 @@ class RawData():
         self.data=np.core.defchararray.replace(self.data,"\n",'', count=None)
         
         timer.toc("Read Raw Data:")
-        
+
         return self
     
     def display(self) -> None:

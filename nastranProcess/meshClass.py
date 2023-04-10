@@ -1,17 +1,29 @@
 #import pickle
 import numpy as np
 from typing import Self
+from dataclasses import dataclass
+from pytictoc import TicToc
 
 from .lineTypeClass import LineType
 from .lineTypeClass import MeshCount
 from .generalMethods import convertToFloat,convertToInt
 from .generalMethods import divideStringArrayFixedWidth, getEnum
 
+@dataclass
 class Mesh():
     def __init__(self) -> None:
-        print("Mesh init")
+        #print("Mesh init")
+        
+        self.pointer: dict
+        self.tempElementNumber: dict
+        self.mesh: dict
         
     def convert(self,rawData) -> Self:
+        """Convert the rawData"""
+        
+        # Start timer
+        timer = TicToc()
+        timer.tic()
 
         #lineType=rawData.getLineTypes
   
@@ -23,8 +35,8 @@ class Mesh():
             LThandle=getEnum(MT.name,LineType)
             MThandle=getEnum(MT.name,MeshCount)
             
-            print(LThandle.value)
-            print(MThandle.value)
+            #print(LThandle.value)
+            #print(MThandle.value)
 
             tempLines=rawData.data[rawData.getLineTypes == LThandle]
 
@@ -45,11 +57,15 @@ class Mesh():
             tempMesh=convertToInt(tempMesh)
             tempMesh=tempMesh[:,:int(MThandle.value)]
 
-            tempDictName=str(LThandle.value)
-            print(tempDictName)
+            
             
             # Add to dictionary
+            tempDictName=str(LThandle.value)
             self.pointer[tempDictName]=tempPointer
             self.tempElementNumber[tempDictName]=tempElementNumber
             self.mesh[tempDictName]=tempMesh
+            
+        timer.toc("Convert Mesh:")
+        return self
+
         
