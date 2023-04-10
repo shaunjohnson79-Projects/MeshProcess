@@ -19,8 +19,8 @@ class Grid():
         tempLines=divideStringArrayFixedWidth(tempLines,width)
         
         # Element Numbers
-        self.elementNumber=tempLines[:,[1]]
-        self.elementNumber=convertToInt(self.elementNumber)
+        self.pointer=tempLines[:,[1]]
+        self.pointer=convertToInt(self.pointer)
         
         # Grid coordinates        
         self.coordinate=tempLines[:,[3,4,5]]
