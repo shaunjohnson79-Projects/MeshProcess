@@ -1,11 +1,15 @@
 from pytictoc import TicToc
+from dataclasses import dataclass
 
 from .rawDataClass import RawData
+from .gridClass import Grid
+from .meshClass import Mesh
+from .lineTypeClass import LineType, MeshNOE  
+from .generalMethods import getEnum
 
 
 
-
-
+#@dataclass()
 class Nastran:
     def __init__(self) -> None:
         # define variables
@@ -16,14 +20,15 @@ class Nastran:
         # read the data
         #self.readData()
     
+    
     def __repr__(self):
         returnString = ''
-        returnString += f"Nastran\n"
-        returnString += f"Filename: {self.fileName}\n"
-        returnString += f"precision: {self.precision}\n"
-        returnString += f"isGood: {self.isGood}\n"
+        tempDict=self.__dict__
+        for key in tempDict:
+            returnString += f"{key}: {tempDict[key]}\n"
         return returnString
-    
+        
+        
     def readfromFile(self,fileName) -> None:
         """Read the file data"""
         
@@ -32,36 +37,47 @@ class Nastran:
         # Start timer
         timer = TicToc()
         timer.tic()
+     
+        # Read in the rawData from the file
+        self.getRawData(fileName)
         
-        self.rawData = RawData().read(fileName)
+        # Process the rawData
+        self.getGridData(self.rawData)
+        self.getMeshData(self.rawData)
         
         # Stop timer
-        timer.toc("Read nastran file:")
-        
-        #
+        timer.toc("Read Nastran File:")
 
-    #def __init__(self, fileName) -> None:
-        #"""Read the nastran file"""
+    def getRawData(self,fileName) -> None :
+        """Read in the rawData"""
         
-
+        self.rawData = RawData(fileName)
         
-
-        #self.fileName = fileName
-        #self.rawData = RawData().read(fileName)
-        #self.grid = Grid().convert(self.rawData)
-        #self.mesh = Mesh().convert(self.rawData)
-        
-        #timer.toc("Read nastran file:")
-        
-               
         #print(self.rawData.display())
         #print(self.rawData.numberOfLines)
         #print(self.rawData.CountEnumType(LineType.GRID))
         
-
-        #file = open('tempData.dat', 'wb')
-        #pickle.dump(self, file)
-        #file.close()
+    def getGridData(self,rawData) -> None :
+        """Get Grid"""
+        
+        self.grid = Grid(rawData) 
+        
+    def getMeshData(self,rawData) -> None :
+        """Get Mesh dictionary for the different sort of connectors"""
+        
+        self.mesh={}
+        
+        for MNOEP in MeshNOE:
+            lineTypeHandle=getEnum(MNOEP.name,LineType)
+            meshNOEHandle=getEnum(MNOEP.name,MeshNOE)
+        
+            if (lineTypeHandle == None) or (meshNOEHandle == None):
+                continue
+                
+            if rawData.CountEnumType(lineTypeHandle) == 0:
+                continue
+            
+            self.mesh[str(MNOEP.name)]=Mesh(rawData,lineTypeHandle,meshNOEHandle)
         
     
 

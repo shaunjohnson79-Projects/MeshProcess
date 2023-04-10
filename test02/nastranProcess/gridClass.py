@@ -17,6 +17,18 @@ class Grid():
         
         self.convert(rawData)
         
+    def __repr__(self):
+        # returnString = ''
+        # returnString += f"{self.coordinate.shape}"
+        # #returnString += f"\n"
+        # return returnString
+    
+        returnString = ''
+        tempDict=self.__dict__
+        for key in tempDict:
+            returnString += f"{key}: {tempDict[key].shape}\n"
+        return returnString
+        
     def convert(self,rawData) -> Self:
         """Convert the rawData"""
         
@@ -43,9 +55,6 @@ class Grid():
         if tempLines.shape[1]>5:
             self.extra=tempLines[:,6:]
             self.extra=convertToInt(self.extra)  
-            
-        #print(tempValue)
-        #print(type(tempLines))
         
         timer.toc("Convert Grid:")
         return self

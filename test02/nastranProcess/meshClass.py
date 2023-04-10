@@ -1,71 +1,61 @@
-#import pickle
 import numpy as np
 from typing import Self
 from dataclasses import dataclass
 from pytictoc import TicToc
 
-from .lineTypeClass import LineType
-from .lineTypeClass import MeshCount
-from .generalMethods import convertToFloat,convertToInt
+from .lineTypeClass import LineType, MeshNOE
+from .generalMethods import convertToInt
 from .generalMethods import divideStringArrayFixedWidth, getEnum
 
-@dataclass
 class Mesh():
-    def __init__(self) -> None:
-        #print("Mesh init")
+    def __init__(self,rawData,lineTypeHandle,meshNOEHandle) -> None: 
+        self.pointer=np.array
+        self.tempElementNumber=np.array
+        self.mesh=np.array
+        self.lineType=lineTypeHandle
+        self.meshNOE=meshNOEHandle
+        self.name=str(lineTypeHandle.value)
         
-        self.pointer: dict
-        self.tempElementNumber: dict
-        self.mesh: dict
         
-    def convert(self,rawData) -> Self:
-        """Convert the rawData"""
+        self.convert(rawData)
         
+    def __repr__(self):
+        pass
+        # returnString = ''
+        # tempDict=self.__dict__
+        # for key in tempDict:
+        #     tempValue=tempDict[key]
+        #     returnString += f"{key}: {tempValue}\n"
+        # return returnString
+        
+    def convert(self,rawData) -> Self:  
         # Start timer
         timer = TicToc()
         timer.tic()
-
-        #lineType=rawData.getLineTypes
-  
-        self.pointer={}
-        self.tempElementNumber={}
-        self.mesh={}
-  
-        for MT in MeshCount:
-            LThandle=getEnum(MT.name,LineType)
-            MThandle=getEnum(MT.name,MeshCount)
-            
-            #print(LThandle.value)
-            #print(MThandle.value)
-
-            tempLines=rawData.data[rawData.getLineTypes == LThandle]
-
-            # Divide the lines by fixed width
-            width=8
-            tempLines=divideStringArrayFixedWidth(tempLines,width)
-            
-            # Pointer
-            tempPointer=tempLines[:,[1]]
-            tempPointer=convertToInt(tempPointer)
-            
-            # elementNumber??
-            tempElementNumber=tempLines[:,[2]]
-            tempElementNumber=convertToInt(tempElementNumber)  
-            
-            # Mesh
-            tempMesh=tempLines[:,3:]
-            tempMesh=convertToInt(tempMesh)
-            tempMesh=tempMesh[:,:int(MThandle.value)]
-
-            
-            
-            # Add to dictionary
-            tempDictName=str(LThandle.value)
-            self.pointer[tempDictName]=tempPointer
-            self.tempElementNumber[tempDictName]=tempElementNumber
-            self.mesh[tempDictName]=tempMesh
-            
-        timer.toc("Convert Mesh:")
-        return self
+        
+        # Get the lines which match the lineType
+        tempLines=rawData.data[rawData.getLineTypes == self.lineType]
+        
+        # Divide the lines by fixed width
+        width=8
+        tempLines=divideStringArrayFixedWidth(tempLines,width)
+        
+        # Pointer
+        self.pointer=tempLines[:,[1]]
+        self.pointer=convertToInt(self.pointer)
+        
+        # elementNumber??
+        self.tempElementNumber=tempLines[:,[2]]
+        self.tempElementNumber=convertToInt(self.tempElementNumber)  
+        
+        # Mesh
+        self.mesh=tempLines[:,3:]
+        self.mesh=convertToInt(self.mesh)
+        self.mesh=self.mesh[:,:int(self.meshNOE.value)]
+        
+        timer.toc(f"Convert Mesh: {self.name}={rawData.CountEnumType(self.lineType)}:")
+        
+                    
+ 
 
         

@@ -8,12 +8,15 @@ class LineType(Enum):
     CEND = "CEND"
     SOL = "SOL"
     PSOLID = "PSOLID"
+    CTRI = "CTRI"
     CTETRA = "CTETRA"
     CPENTA = "CPENTA"
     EIGRL = "EIGRL"
     ENDDATA = "ENDDATA"
     EMPTY = "EMPTY"
 
-class MeshCount(Enum):
+class MeshNOE(Enum):
     CTETRA = "4"
     CPENTA = "6"
+    CTRI = "3"
+    

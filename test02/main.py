@@ -7,16 +7,15 @@ def main():
     print(os.getcwd())
     
     nastranData=Nastran()
-    print(nastranData)
     nastranData.readfromFile(fileNameIn)
     
-    print(nastranData)  
+    #print(nastranData)  
     
     
 
-    print("main: end")
+    #print("main: end")
     
-    print(nastranData.__dict__)
+    #print(nastranData.__dict__)
 
 if __name__ == "__main__":
     main()

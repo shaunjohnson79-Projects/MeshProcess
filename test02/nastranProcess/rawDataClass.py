@@ -7,22 +7,25 @@ import os
 from .lineTypeClass import LineType
 
 class RawData():
-    def __init__(self) -> None:
+    def __init__(self,fileName) -> None:
         self.data= np.array
-
-    def __repr__(self):
-        returnString = f"{self.data.size}"
-        #returnString2 = self.__dict__
-        return returnString
-        
-    def read(self,fileName) -> Self:
-        """Read in the raw data"""
         
         # Start timer
         timer = TicToc()
         timer.tic()
         
-        print(os.getcwd())
+        self.read(fileName)
+        
+        timer.toc("Read Raw Data:")
+
+    def __repr__(self):
+        returnString = f"{self.data.size}"
+        return returnString
+        
+    def read(self,fileName) -> Self:
+        """Read in the raw data"""
+
+        #print(os.getcwd())
         
         with open(fileName) as fileHandle:
             Lines = fileHandle.readlines()
@@ -30,8 +33,6 @@ class RawData():
         
         # Remove new line charcter from strings
         self.data=np.core.defchararray.replace(self.data,"\n",'', count=None)
-        
-        timer.toc("Read Raw Data:")
 
         return self
     
