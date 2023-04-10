@@ -17,8 +17,6 @@ class Nastran:
         self.precision = 8
         self.isGood = False
         
-        # read the data
-        #self.readData()
     
     
     def __repr__(self):
@@ -32,6 +30,7 @@ class Nastran:
     def readfromFile(self,fileName) -> None:
         """Read the file data"""
         
+        # Add the filename to the class
         self.fileName=fileName
         
         # Start timer
