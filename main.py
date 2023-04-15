@@ -6,7 +6,7 @@ def main():
     print("main: start")
     fileNameIn = "nastran_input.nas"
     # fileNameIn = "testCode.long.nas"
-    fileNameIn = "testCode.short.nas"
+    # fileNameIn = "testCode.short.nas"
     print(os.getcwd())
 
     nastranData = Nastran()
@@ -15,6 +15,7 @@ def main():
     # print(nastranData)
 
     # print("main: end")
+
 
     # print(nastranData.__dict__)
 if __name__ == "__main__":

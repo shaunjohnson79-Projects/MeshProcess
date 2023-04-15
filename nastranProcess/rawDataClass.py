@@ -28,10 +28,6 @@ class RawData():
         self.combineLines(LineType.STAR)
         timer2.toc("Convert longlines:")
 
-        tempLines = self.data[self.getLineTypes == LineType.PSHELL]
-        print(len(tempLines))
-        print(tempLines)
-
         # remove getLineTypes as the lines have changed
         # del self.getLineTypes
         # self.getLineTypes
@@ -106,7 +102,7 @@ class RawData():
         # Check if variable has already been calculated
         # if hasattr(self, 'lineTypeList'):
         #    return self.lineTypeList
-        # print("Calculate: lineTypeList")
+        print("\tCalculate: lineTypeList")
 
         # define the list
         self.lineTypeList = np.empty(self.numberOfLines, dtype=LineType)
