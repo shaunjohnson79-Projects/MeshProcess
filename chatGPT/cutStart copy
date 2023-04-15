@@ -1,0 +1,15 @@
+import numpy as np
+
+dataArray = np.array(
+    [['e-1212', '-1212', '12544', '1212e-6', '+644'],
+     ['e-1212', '-1212', '12544', '1212e-6', 'e+644']])
+
+# create a boolean mask that identifies elements that start with 'e'
+mask = np.char.startswith(dataArray, 'e')
+
+# use np.char.lstrip() to remove 'e' from the beginning of relevant strings
+dataArray[mask] = np.char.lstrip(dataArray[mask], 'e')
+
+print(dataArray)
+
+dataArray.astype('float')
