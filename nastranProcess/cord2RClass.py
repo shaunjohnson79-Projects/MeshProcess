@@ -9,15 +9,25 @@ from .generalMethods import divideStringArrayFixedWidth
 from .generalMethods import divideEnumType
 
 
-class Grid():
+class Cord2r():
     def __init__(self, rawData) -> None:
-        # print("Grid init")
-        self.pointer = np.ndarray
-        self.coordinate = np.ndarray
+        # print("Pshell Init")
+        self.array = np.ndarray
+        self.value = int
 
-        tempLineType = LineType.GRID
+        self.convert(rawData)
 
-        self.convert(rawData, tempLineType)
+    def convert(self, rawData) -> Self:
+        self.array = rawData
+        self.value = rawData[0]
+
+
+class Cord2rRaw():
+    def __init__(self, rawData) -> None:
+        # print("CORD2R Init")
+        self.rawData = np.ndarray
+
+        self.convert(rawData)
 
     def __repr__(self):
         # returnString = ''
@@ -31,8 +41,10 @@ class Grid():
             returnString += f"{key}: {tempDict[key].shape}\n"
         return returnString
 
-    def convert(self, rawData, tempLineType) -> Self:
+    def convert(self, rawData) -> Self:
         """Convert the rawData"""
+
+        tempLineType = LineType.CORD2R
 
         # Start timer
         timer = TicToc()
@@ -41,18 +53,11 @@ class Grid():
         # Divide the lines by fixed width
         tempLines = divideEnumType(rawData, tempLineType)
 
-        # Element Numbers
-        self.pointer = tempLines[:, [0]]
-        self.pointer = convertToInt(self.pointer)
+        # get the rawData
+        self.rawData = tempLines
+        self.rawData = convertToInt(self.rawData)
 
-        # Grid coordinates
-        self.coordinate = tempLines[:, [2, 3, 4]]
-        self.coordinate = convertToFloat(self.coordinate)
-
-        # Read extra elements
-        if tempLines.shape[1] > 4:
-            self.extra = tempLines[:, 5:]
-            self.extra = convertToInt(self.extra)
+        # print(self.cord2r)
 
         timer.toc(
             f"Convert: {tempLineType.value}={rawData.CountEnumType(tempLineType)}: ")

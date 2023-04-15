@@ -3,19 +3,20 @@ from nastranProcess.nastran import Nastran
 
 
 def main():
-    print("main: start")
-    fileNameIn = "nastran_input.nas"
-    # fileNameIn = "testCode.long.nas"
-    # fileNameIn = "testCode.short.nas"
+
+    fileNameList = []
+
+    # fileNameList.append("nastran_input.nas")
+    # fileNameList.append("testCode.long.nas")
+    fileNameList.append("testCode.short.nas")
+    # fileNameList.append("testCode.shortXML.nas")
     print(os.getcwd())
 
-    nastranData = Nastran()
-    nastranData.readfromFile(fileNameIn)
+    for fileName in fileNameList:
+        nastranData = Nastran()
+        nastranData.readfromFile(fileName)
 
     # print(nastranData)
-
-    # print("main: end")
-
 
     # print(nastranData.__dict__)
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ from pytictoc import TicToc
 from .lineTypeClass import LineType, MeshNOE
 from .generalMethods import convertToInt
 from .generalMethods import divideStringArrayFixedWidth, getEnum
+from .generalMethods import divideEnumType
 
 
 class Mesh():
@@ -33,23 +34,16 @@ class Mesh():
         timer = TicToc()
         timer.tic()
 
-        # Get the lines which match the lineType
-        tempLines = rawData.data[rawData.getLineTypes == self.lineType]
-
         # Divide the lines by fixed width
-        if np.any(np.char.find(tempLines, '*') >= 0):
-            width = 16
-        else:
-            width = 8
-        tempLines = divideStringArrayFixedWidth(tempLines, width)
+        tempLines = divideEnumType(rawData, self.lineType)
 
         # Pointer
         self.pointer = tempLines[:, [0]]
         self.pointer = convertToInt(self.pointer)
 
         # elementNumber??
-        self.tempElementNumber = tempLines[:, [1]]
-        self.tempElementNumber = convertToInt(self.tempElementNumber)
+        self.pshell = tempLines[:, [1]]
+        self.pshell = convertToInt(self.pshell)
 
         # Mesh
         self.mesh = tempLines[:, 2:]
@@ -57,4 +51,4 @@ class Mesh():
         self.mesh = self.mesh[:, :int(self.meshNOE.value)]
 
         timer.toc(
-            f"Convert Mesh: {self.name}={rawData.CountEnumType(self.lineType)}:")
+            f"Convert: {self.name}={rawData.CountEnumType(self.lineType)}:")

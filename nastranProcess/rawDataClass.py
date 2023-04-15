@@ -22,11 +22,9 @@ class RawData():
 
         self.read(fileName)
 
-        timer2 = TicToc()
-        timer2.tic()
+        # Combine Long lines
         self.combineLines(LineType.PLUS)
         self.combineLines(LineType.STAR)
-        timer2.toc("Convert longlines:")
 
         # remove getLineTypes as the lines have changed
         # del self.getLineTypes
@@ -36,18 +34,34 @@ class RawData():
         timer.toc("Read Raw Data:")
 
     def combineLines(self, EnumLineType):
-        # Look for + lines
+        """Combine lines that have a certain EnumLineType"""
+
+        timer2 = TicToc()
+        timer2.tic()
+
+        # Check enum types allowed
+        if EnumLineType == LineType.PLUS:
+            pass
+        elif EnumLineType == LineType.STAR:
+            pass
+        else:
+            print(f"{EnumLineType} is not allowed for this method")
+
+        # Look for the required lineType
         mask = self.getLineTypes == EnumLineType
         if not np.any(mask == True):
             return
         maskPointerStart = np.where(mask)[0]
         matchString = self.data[mask].astype('U8')
 
+        # Sort into reverse order
         sortIndices = np.argsort(maskPointerStart)[::-1]
         matchString = matchString[sortIndices]
         maskPointerStart = maskPointerStart[sortIndices]
 
-        dataArray = self.data.astype('U800')
+        # Get the data and allow for the lines to be longer
+        dataArray = self.data
+        USize = int(dataArray.dtype.str.replace("<U", ""))
 
         for tp, blah in enumerate(maskPointerStart):
             tempMatchString = matchString[tp]
@@ -56,13 +70,27 @@ class RawData():
 
             newLine1 = dataArray[IE]+dataArray[IS]
             newLine2 = newLine1.replace(tempMatchString, '')
+
+            # Adjust the size of the array if necessary
+            if len(newLine2) > USize:
+                USize = len(newLine2)
+                tempString = f"<U{USize}"
+                print(f"\tResize Arrary: {tempString}")
+                dataArray = dataArray.astype(tempString)
+
             dataArray[IE] = newLine2
+
         # Remove all the lines after data has been transferred
         dataArray = np.delete(dataArray, maskPointerStart)
+
+        # Put the data back to self.
         self.data = dataArray
 
-        print(f"Type: {EnumLineType}: {len(matchString)}")
+        # reset the lineTypes
+        del self.getLineTypes
+        self.getLineTypes
 
+        timer2.toc(f"CombineLines: {EnumLineType.value}={len(matchString)}:")
         return self.data
 
     def __repr__(self):
@@ -100,8 +128,8 @@ class RawData():
         """Make a list of the LineTypes"""
 
         # Check if variable has already been calculated
-        # if hasattr(self, 'lineTypeList'):
-        #    return self.lineTypeList
+        if hasattr(self, 'lineTypeList'):
+            return self.lineTypeList
         print("\tCalculate: lineTypeList")
 
         # define the list
@@ -113,10 +141,10 @@ class RawData():
 
         return self.lineTypeList
 
-    # @getLineTypes.deleter
-    # def getLineTypes(self) -> None:
-    #     print("Delete: lineTypeList")
-    #     del self.lineTypeList
+    @getLineTypes.deleter
+    def getLineTypes(self) -> None:
+        print("\tDelete: lineTypeList")
+        del self.lineTypeList
 
     def getLineType(self, line) -> LineType:
         """get the line Type"""
@@ -127,6 +155,29 @@ class RawData():
         print("Unknown line")
         print(line)
         return None
+
+    def deleteEnumType(self, EnumLineType):
+
+        timer = TicToc()
+        timer.tic()
+
+        mask = self.getLineTypes == EnumLineType
+        count0 = np.count_nonzero(mask)
+        if not np.any(mask == True):
+            return
+
+        mask = np.invert(mask)
+
+        count1 = self.numberOfLines
+        self.data = self.data[mask]
+        count2 = self.numberOfLines
+
+        # reset the lineTypes
+        del self.getLineTypes
+        self.getLineTypes
+
+        timer.toc(
+            f"Delete: {EnumLineType.value}={count0} {count1} to {count2}:")
 
 
 def debug():

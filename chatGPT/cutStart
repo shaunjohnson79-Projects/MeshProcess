@@ -3,13 +3,5 @@ import numpy as np
 dataArray = np.array(
     ['abcdeghijklm', 'a1 foobar', 'cowboy a2', 'a2 asdasd', 'a3 asdasd'])
 
-# dataArray = np.array([s[8:] for s in dataArray])
-# print(dataArray)
-
-
-contains_a1 = np.char.find(dataArray, 'a1asd')
-
-if np.any(contains_a1 >= 0):
-    print("dataArray contains 'a1'")
-else:
-    print("dataArray does not contain 'a1'")
+aa = int(dataArray.dtype.str.replace("<U", ""))
+print(aa)

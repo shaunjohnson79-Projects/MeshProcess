@@ -18,6 +18,7 @@ class LineType(Enum):
     EMPTY = "EMPTY"
     PSHELL = "PSHELL"
     CORD2R = "CORD2R"
+    META = "METADATA"
     PLUS = "+"
     STAR = "*"
 
