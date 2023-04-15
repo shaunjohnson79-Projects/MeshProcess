@@ -3,7 +3,7 @@ from typing import Self
 from dataclasses import dataclass
 from pytictoc import TicToc
 
-from .lineTypeClass import LineType
+from .lineTypeClass import LineType, AnsaComment
 from .generalMethods import convertToFloat, convertToInt
 from .generalMethods import divideEnumType
 
@@ -60,8 +60,9 @@ class CommentRaw():
 
             if newLine:
                 # Add the tempLine to list
-                commentList.append(tempLine)
-                # print(tempLine)
+                if len(tempLine) != 0:
+                    commentList.append(tempLine)
+                    # print(tempLine)
 
                 # Start a new tempLine
                 tempLine = comment
@@ -69,11 +70,51 @@ class CommentRaw():
                 tempLine = tempLine+comment
         commentList.append(tempLine)
 
-        self.rawData = np.asarray(commentList)
+        self.data = np.asarray(commentList)
+        # print(self.data)
+        self.getCommentType
 
         timer.toc(
             f"Convert: {tempLineType.value}={rawData.CountEnumType(tempLineType)}: ")
         return self
+
+    @property
+    def getCommentType(self) -> list:
+        """Make a list of the CommentType"""
+
+        # Check if variable has already been calculated
+        # if hasattr(self, 'commentTypeList'):
+        #    return self.commentTypeList
+        print("\tCalculate: commentTypeList")
+
+        # define the list
+        self.commentTypeList = np.empty(self.numberOfLines, dtype=AnsaComment)
+
+        # fill the list
+        for i, line in np.ndenumerate(self.data):
+            self.commentTypeList[i] = self.getAnsaComment(line)
+
+        return self.commentTypeList
+
+    @getCommentType.deleter
+    def CommentType(self) -> None:
+        print("\tDelete: commentTypeList")
+        del self.commentTypeList
+
+    def getAnsaComment(self, line) -> AnsaComment:
+        """get the AnsaComment"""
+        for tempAnsaComment in AnsaComment:
+            if line.startswith(tempAnsaComment.value):
+                return tempAnsaComment
+
+        print("Unknown line")
+        print(line)
+        return None
+
+    @property
+    def numberOfLines(self) -> int:
+        """Get the number of lines in the file"""
+        return len(self.data)
 
 
 class Comment():

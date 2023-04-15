@@ -27,3 +27,11 @@ class MeshNOE(Enum):
     CTETRA = "4"
     CPENTA = "6"
     CTRIA3 = "3"
+
+
+class AnsaComment(Enum):
+    COLOR = "ANSA_COLOR"
+    NAMECOMMENT = "ANSA_NAME_COMMENT"
+    USERATTRIBUTES = "ANSA_USER_ATTRIBUTES"
+    VERSION = "ANSA_VERSION"
+    PART = "ANSA_PART"
