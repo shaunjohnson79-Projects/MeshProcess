@@ -148,6 +148,6 @@ class Nastran:
         if not self.containsEnum(LineType.COMMENT):
             return
 
-        commentRaw = CommentRaw(self.rawData)
+        self.comment = CommentRaw(self.rawData)
 
         self.rawData.deleteEnumType(LineType.COMMENT)

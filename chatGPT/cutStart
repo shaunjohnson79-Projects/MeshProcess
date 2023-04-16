@@ -1,7 +1,7 @@
 import numpy as np
 
 dataArray = np.array(
-    ['abcdeghijklm', 'a1 foobar', 'cowboy a2', 'a2 asdasd', 'a3 asdasd'])
+    ['a1 asdas', 'a1 foobar', 'cowboy a2', 'a2 asdasd', 'a3 asdasd'])
 
 aa = int(dataArray.dtype.str.replace("<U", ""))
 print(aa)
