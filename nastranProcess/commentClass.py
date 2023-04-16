@@ -35,43 +35,16 @@ class CommentRaw():
         timer = TicToc()
         timer.tic()
 
+        # Clean up the comments
         tempLines = rawData.data[rawData.getLineTypes == tempLineType]
         tempLines = np.array([s[1:] for s in tempLines])
         tempLines = np.char.replace(tempLines, '~', ';')
-        tempLines = tempLines.tolist()
 
-        commentList = []
-        newLine = True
-        tempLine = ''
-        for comment in tempLines:
-            if len(comment.strip()) == 0:
-                newLine = True
-                continue
-            elif comment.startswith('$$'):
-                newLine = True
-                continue
-            elif comment.startswith(' '):
-                newLine = True
-                continue
-            elif comment.startswith('ANSA'):
-                newLine = True
-            else:
-                newLine = False
+        # combine the lines
+        self.data = np.asarray(self.__joinCommentLines(tempLines))
+        del tempLines
 
-            if newLine:
-                # Add the tempLine to list
-                if len(tempLine) != 0:
-                    commentList.append(tempLine)
-                    # print(tempLine)
-
-                # Start a new tempLine
-                tempLine = comment
-            else:
-                tempLine = tempLine+comment
-        commentList.append(tempLine)
-
-        self.data = np.asarray(commentList)
-        # print(self.data)
+        # get the comment type
         self.getCommentType
 
         timer.toc(
@@ -115,6 +88,46 @@ class CommentRaw():
     def numberOfLines(self) -> int:
         """Get the number of lines in the file"""
         return len(self.data)
+
+    def __joinCommentLines(self, tempLines) -> list:
+        # group the comments the extend over multiple lines
+        commentList = []
+        newLine = True
+        tempLine = ''
+
+        tempLines = tempLines.tolist()
+
+        # Iterate through tempLines
+        for comment in tempLines:
+            if len(comment.strip()) == 0:
+                newLine = True
+                continue
+            elif comment.startswith('$$'):
+                newLine = True
+                continue
+            elif comment.startswith(' '):
+                newLine = True
+                continue
+            elif comment.startswith('ANSA'):
+                newLine = True
+            else:
+                newLine = False
+
+            if newLine:
+                # Add the tempLine to list
+                if len(tempLine) != 0:
+                    commentList.append(tempLine)
+                    # print(tempLine)
+
+                # Start a new tempLine
+                tempLine = comment
+            else:
+                tempLine = tempLine+comment
+
+        if len(tempLine) != 0:
+            commentList.append(tempLine)
+
+        return commentList
 
 
 class Comment():
